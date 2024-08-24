@@ -2,12 +2,13 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import ButtonForm from "../../../components/elements/ButtonForm";
 import InputGroup from "../../../components/fragments/InputGroup";
 import { Product } from "../../../types";
+import { useCreateProduct } from "../../../features/product";
+import { useNavigate } from "react-router-dom";
 // import { redirect } from "react-router-dom";
 
 export default function CreateProduct() {
   const [product, setProduct] = useState<Product>({ name: "", price: 0, category: "", description: "", image: "" });
-
-  const [message, setMessage] = useState<string>("")
+  const navigate = useNavigate()
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -17,33 +18,14 @@ export default function CreateProduct() {
     }));
   };
 
-  const submitHandler = (e: FormEvent<HTMLFormElement>) => {
+  const { createProduct, message } = useCreateProduct()
+
+  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createProductData(product)
+    await createProduct({ ...product, price: Number(product.price) })
+    navigate('/product')
   };
-  
-  const createProductData = async (data: Product) => {
-    try {
-      const response = await fetch('http://localhost:3005/products?key=aldypanteq', {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...data,
-          price: Number(data.price)
-        })
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const result = await response.json();
-      setMessage(result.message);
-      setProduct({ name: "", price: 0, category: "", description: "", image: "" });
-    } catch (error) {
-      setMessage('An error occurred while creating the product.');
-    }
-  };
+
 
   return (
     <div>

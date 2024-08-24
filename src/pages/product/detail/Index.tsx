@@ -1,29 +1,11 @@
-import { useEffect, useState } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
-import { type Product } from "../../../types"
 import Swal from "sweetalert2"
-
+import { useProductId } from "../../../features/product"
 export default function DetailProduct() {
-  const [product, setProduct] = useState<Product | null>(null)
   const { id } = useParams()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await fetch(`http://localhost:3005/products/${id}?key=aldypanteq`)
-        if (!response.ok) {
-          throw new Error('Failed to fetch product')
-        }
-        const result = await response.json()
-        setProduct(result.data)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    fetchProduct()
-  }, [id])
-
+  const {product} = useProductId(id)
   const deleteHandler = async () => {
     try {
       const result = await Swal.fire({
@@ -71,6 +53,7 @@ export default function DetailProduct() {
         <h3>{product.category}</h3>
         <p>{product.description}</p>
         <button onClick={deleteHandler}>Delete Product</button>
+        <Link to={`/product/update/${product.id}`}>Edit</Link>
       </div>
     </div>
   )
