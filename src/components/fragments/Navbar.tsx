@@ -18,6 +18,12 @@ export default function Navbar() {
                 <li className='border-r-2 px-2 border-black'>
                     <Link to={'/product/create'}>Product Create</Link>
                 </li>
+                <li className='border-r-2 px-2 border-black'>
+                    <Link to={'/category'}>Category</Link>
+                </li>
+                <li className='border-r-2 px-2 border-black'>
+                    <Link to={'/category/create'}>Category Create</Link>
+                </li>
             </ul>
         </div>
     </nav>

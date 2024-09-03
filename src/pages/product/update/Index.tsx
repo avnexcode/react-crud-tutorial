@@ -1,45 +1,72 @@
 import { useNavigate, useParams } from "react-router-dom";
 import ButtonForm from "../../../components/elements/ButtonForm";
 import InputGroup from "../../../components/fragments/InputGroup";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Product } from "../../../types";
 import { useProductId, useUpdateProduct } from "../../../features/product";
+import { FormikProps, useFormik } from "formik";
+import SelectGroup from "../../../components/fragments/SelectGroup";
+
+type SelectOption = {
+  id: string;
+  name: string;
+  description: string,
+}
 
 export default function UpdateProduct() {
+  const categories: SelectOption[] = [
+    {
+      id: '1',
+      name: 'Makanan',
+      description: ''
+    },
+    {
+      id: '2',
+      name: 'Minuman',
+      description: ''
+    },
+  ]
   const { id } = useParams()
-  const { product } = useProductId(id)
-  const [updateProductData, setUpdateProductData] = useState<Product>({
-    name: "",
-    price: 0,
-    description: "",
-    category: "",
-    image: ""
+  const { data: product } = useProductId(id!)
+  const { mutate: updateProduct } = useUpdateProduct({
+    onSuccess: () => {
+      console.log('update success')
+    },
   })
 
   const navigate = useNavigate()
 
+  const formik: FormikProps<Product> = useFormik<Product>({
+    initialValues: {
+      name: "",
+      price: 0,
+      category: "",
+      description: "",
+      image: "",
+    },
+    onSubmit: async (values, { resetForm }) => {
+      await updateProduct({ ...values, price: Number(values.price) }, {
+        onError: (error) => {
+          console.log(`Something went wrong ${error}`)
+        }
+      });
+      resetForm();
+      navigate('/product');
+    },
+  });
+
   useEffect(() => {
     if (product) {
-      setUpdateProductData(product)
+      formik.setValues({
+        id,
+        name: product?.name || '',
+        price: product?.price || 0,
+        category: product?.category || '',
+        description: product?.description || '',
+        image: product?.image || '',
+      });
     }
-  }, [product])
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setUpdateProductData((prev) => ({
-      ...prev,
-      [name]: value
-    }
-    ))
-  }
-
-  const { updateProduct } = useUpdateProduct()
-
-  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    await updateProduct({ ...updateProductData, price: Number(updateProductData.price) })
-    navigate('/product')
-  }
+  }, [id, product])
 
   return (
     <div>
@@ -47,21 +74,30 @@ export default function UpdateProduct() {
         <h1 className="text-5xl">Update Product AH KAWAI</h1>
       </div>
       <div className="">
-        <form action="" className="w-full" onSubmit={submitHandler}>
+        <form action="" className="w-full" onSubmit={formik.handleSubmit}>
           <div className="mb-2">
-            <InputGroup name="name" onChange={handleChange} value={updateProductData.name} />
+            <InputGroup name="name" onChange={formik.handleChange} value={formik.values.name} />
           </div>
           <div className="mb-2">
-            <InputGroup name="price" onChange={handleChange} value={updateProductData.price} />
+            <InputGroup name="price" onChange={formik.handleChange} value={formik.values.price} />
           </div>
           <div className="mb-2">
-            <InputGroup name="category" onChange={handleChange} value={updateProductData.category} />
+            <SelectGroup
+              name="category"
+              options={categories}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.category}
+            />
+            {formik.touched.category && formik.errors.category ? (
+              <div>{formik.errors.category}</div>
+            ) : null}
           </div>
           <div className="mb-2">
-            <InputGroup name="description" onChange={handleChange} value={updateProductData.description} />
+            <InputGroup name="description" onChange={formik.handleChange} value={formik.values.description} />
           </div>
           <div className="mb-2">
-            <InputGroup name="image" onChange={handleChange} value={updateProductData.image} />
+            <InputGroup name="image" onChange={formik.handleChange} value={formik.values.image} />
           </div>
           <div className="mb-2 flex justify-end">
             <ButtonForm type="submit">Update</ButtonForm>

@@ -1,45 +1,48 @@
 import { useParams, Link, useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
-import { useProductId } from "../../../features/product"
+import { useDeleteProduct, useProductId } from "../../../features/product"
+import { useEffect } from "react"
 export default function DetailProduct() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { data: product } = useProductId(id!)
 
-  const {product} = useProductId(id)
-  const deleteHandler = async () => {
-    try {
-      const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
-      })
+  const { mutate: deleteProduct, isError, error } = useDeleteProduct({
+    onSuccess: () => {
+      Swal.fire({
+        title: "Deleted!",
+        text: "Your product has been deleted.",
+        icon: "success"
+      });
+      navigate('/product');
+    }
+  });
 
-      if (result.isConfirmed) {
-        const response = await fetch(`http://localhost:3005/products/${id}?key=aldypanteq`, {
-          method: "DELETE"
-        })
-        if (!response.ok) {
-          throw new Error('Failed to delete product')
-        }
-        await Swal.fire({
-          title: "Deleted!",
-          text: "Your product has been deleted.",
-          icon: "success"
-        })
-        navigate('/product')  // Redirect after successful deletion
-      }
-    } catch (err) {
+  useEffect(() => {
+    if (isError) {
       Swal.fire({
         title: "Error",
-        text: err instanceof Error ? err.message : 'An error occurred',
+        text: error instanceof Error ? error.message : "An error occurred",
         icon: "error"
-      })
+      });
     }
-  }
+  }, [isError, error]);
+
+  const deleteHandler = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    });
+
+    if (result.isConfirmed) {
+      deleteProduct(id!);
+    }
+  };
 
   if (!product) return <div>No product found</div>
 

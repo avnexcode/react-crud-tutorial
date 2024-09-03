@@ -14,13 +14,24 @@ export default function Pagination({ page, setPage, totalPages }: PaginationProp
             setPage(newPage);
         }
     };
-    const renderLink = (total: number) => {
-        const links = []
-        for (let i = 1; i <= total; i++) {
-            links.push(i)
+
+    const renderPageNumbers = () => {
+        const pageNumbers = [];
+        const maxVisiblePages = 5;
+
+        let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
+        const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+        if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
         }
-        return links
-    }
+
+        for (let i = startPage; i <= endPage; i++) {
+            pageNumbers.push(i);
+        }
+
+        return pageNumbers;
+    };
 
     return (
         <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
@@ -37,13 +48,16 @@ export default function Pagination({ page, setPage, totalPages }: PaginationProp
                     />
                 </svg>
             </Link>
-            {renderLink(totalPages).map((item, index) => <Link
-                key={index}
-                to="#"
-                aria-current="page"
-                className={`relative z-10 inline-flex items-center ${item === page ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-500' } px-4 py-2 text-sm font-semibold focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}>
-                {item}
-            </Link>)}
+            {renderPageNumbers().map((item) => (
+                <Link
+                    key={item}
+                    to={`${pathname}?page=${item}`}
+                    onClick={() => handlePageChange(item)}
+                    aria-current={item === page ? 'page' : undefined}
+                    className={`relative z-10 inline-flex items-center ${item === page ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-500'} px-4 py-2 text-sm font-semibold focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}>
+                    {item}
+                </Link>
+            ))}
             <Link
                 onClick={() => handlePageChange(page + 1)}
                 to={`${pathname}?page=${page + 1}`}
