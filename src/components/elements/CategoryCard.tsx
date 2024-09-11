@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom"
-import { type Product } from "../../types"
+import { Category } from "../../types"
 
-type ProductCardProps = {
-    product: Product
+type CategoryCardProps = {
+    category: Category
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function CategoryCard({ category }: CategoryCardProps) {
     return (
-        <Link to={`/product/detail/${product.id}`} className="rounded overflow-hidden shadow-lg flex flex-col w-[400px]">
+        <Link to={`/category/detail/${category.id}`} className="rounded overflow-hidden shadow-lg flex flex-col w-[400px]">
             <div ></div>
             <div className="relative w-[400px] h-[200px] overflow-hidden object-fit">
                 <div >
@@ -19,27 +19,27 @@ export default function ProductCard({ product }: ProductCardProps) {
                     </div>
                 </div>
                 <div>
-                    <div
+                    {/* <div
                         className="text-xs absolute top-0 right-0 bg-indigo-600 px-4 py-2 text-white mt-3 mr-3 hover:bg-white hover:text-indigo-600 transition duration-500 ease-in-out">
-                        {product.category.name || ''}
-                    </div>
+                        {product.category}
+                    </div> */}
                 </div>
             </div>
             <div className="px-6 py-4 mb-auto">
                 <div
-                    className="font-medium text-lg hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">{product.name}</div>
+                    className="font-medium text-lg hover:text-indigo-600 transition duration-500 ease-in-out inline-block mb-2">{category.name}</div>
                 <div className="text-gray-500 text-sm">
-                    {product.description}
+                    {category.description}
                 </div>
             </div>
             <div className="px-6 py-3 flex flex-row items-center justify-between bg-gray-100">
-                <div className="py-1 text-xs font-regular text-gray-900 mr-1 flex flex-row items-center">
+                {/* <div className="py-1 text-xs font-regular text-gray-900 mr-1 flex flex-row items-center">
                     <span className="ml-1">{product.price.toLocaleString('id-ID', {
                         style: 'currency',
                         currency: 'IDR',
                         minimumFractionDigits: 0,
                     })}</span>
-                </div>
+                </div> */}
 
                 <div className="py-1 text-xs font-regular text-gray-900 mr-1 flex flex-row items-center">
                     <svg className="h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

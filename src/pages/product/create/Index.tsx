@@ -5,45 +5,27 @@ import { useCreateProduct, useProducts } from "../../../features/product";
 import { FormikProps, useFormik } from "formik";
 import { Product } from "../../../types";
 import SelectGroup from "../../../components/fragments/SelectGroup";
-
-type SelectOption = {
-  id: string;
-  name: string;
-  description: string,
-}
+import { useCategories } from "../../../features/category";
 
 export default function CreateProduct() {
-  const categories: SelectOption[] = [
-    {
-      id: '1',
-      name: 'Makanan',
-      description: ''
-    },
-    {
-      id: '2',
-      name: 'Minuman',
-      description: ''
-    },
-  ]
-
+  const { data: categories } = useCategories(10,1)
   const { refetch: refetchProduct } = useProducts()
-
   const { mutate: createProduct, isPending: createProductPending } = useCreateProduct({
     onSuccess: () => {
       refetchProduct()
     }
   })
   const navigate = useNavigate()
-
-  const formik: FormikProps<Product> = useFormik<Product>({
+  const formik: FormikProps<Omit<Product, 'category'>> = useFormik<Omit<Product, 'category'>>({
     initialValues: {
       name: "",
       price: 0,
-      category: "",
+      category_id: "",
       description: "",
       image: "",
     },
     onSubmit: (values, { resetForm }) => {
+      console.log(values)
       createProduct({ ...values, price: Number(values.price) });
       resetForm();
       navigate('/product');
@@ -65,14 +47,19 @@ export default function CreateProduct() {
           </div>
           <div className="mb-2">
             <SelectGroup
-              name="category"
-              options={categories}
+              name="category_id"
+              options={categories?.categories}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.category}
+              value={formik.values.category_id}
             />
-            {formik.touched.category && formik.errors.category ? (
-              <div>{formik.errors.category}</div>
+            {/* <select name="" id="">
+              {categories?.categories.map((item, index) => {
+                return <option key={index} value="">{item.name}</option>
+              })}
+            </select> */}
+            {formik.touched.category_id && formik.errors.category_id ? (
+              <div>{formik.errors.category_id}</div>
             ) : null}
           </div>
           <div className="mb-2">

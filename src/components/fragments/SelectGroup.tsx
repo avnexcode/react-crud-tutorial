@@ -1,27 +1,22 @@
 import React from 'react'
 import Select from '../elements/Select'
 import Label from '../elements/Label'
-
-type SelectOption = {
-    id: string,
-    name: string,
-    description: string,
-}
+import { Category } from '../../types'
 
 type SelectGroupProps = {
     name: string
     className?: string
     onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     onBlur?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    value: string
-    options: SelectOption[]
+    value?: number | string
+    options?: Category[]
 }
 
 export default function SelectGroup({ options, name, value, onChange, onBlur }: SelectGroupProps) {
     return (
         <>
             <Label htmlFor={name} className="capitalize">{name}</Label>
-            <Select id={name} name="category" options={options} onChange={onChange} onBlur={onBlur} value={value} />
+            <Select id={name} name={name} options={options} onChange={onChange} onBlur={onBlur} value={value} />
         </>
     )
 }

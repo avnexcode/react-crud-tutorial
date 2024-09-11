@@ -51,10 +51,10 @@ export default function DetailProduct() {
       <Link to="/product">Kembali</Link>
       <div>
         <img src={product.image} alt={product.name} />
-        <h1>{product.name}</h1>
-        <h2>{product.price}</h2>
-        <h3>{product.category}</h3>
-        <p>{product.description}</p>
+        <h1>Name : {product.name}</h1>
+        <h2>Price : {product.price}</h2>
+        <p>Product Description{product.description}</p>
+        <h3>Category : {product.category.name || ''}</h3>
         <button onClick={deleteHandler}>Delete Product</button>
         <Link to={`/product/update/${product.id}`}>Edit</Link>
       </div>

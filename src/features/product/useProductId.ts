@@ -59,11 +59,11 @@
 
 import axiosInstance from "../../libs/axios"
 import { useQuery } from "@tanstack/react-query"
-
+import { Product } from "../../types"
 export const useProductId = (id: string | null) => {
     return useQuery({
         queryKey: ['products'],
-        queryFn: async () => {
+        queryFn: async (): Promise<Product> => {
             const response = await axiosInstance.get(`/products/${id}`)
             return response.data.data
         }

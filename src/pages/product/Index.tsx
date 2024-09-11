@@ -45,10 +45,10 @@ const HomeProduct: React.FC = () => {
         )}
       </div>
       <div className="flex justify-center pt-10">
-        <Pagination 
-          page={page} 
-          setPage={handlePageChange} 
-          totalPages={data?.totalPages || 1} 
+        <Pagination
+          page={page}
+          setPage={handlePageChange}
+          totalPages={data?.totalPages || 1}
         />
       </div>
     </div>

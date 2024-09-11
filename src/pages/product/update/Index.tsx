@@ -6,26 +6,10 @@ import { Product } from "../../../types";
 import { useProductId, useUpdateProduct } from "../../../features/product";
 import { FormikProps, useFormik } from "formik";
 import SelectGroup from "../../../components/fragments/SelectGroup";
-
-type SelectOption = {
-  id: string;
-  name: string;
-  description: string,
-}
+import { useCategories } from "../../../features/category";
 
 export default function UpdateProduct() {
-  const categories: SelectOption[] = [
-    {
-      id: '1',
-      name: 'Makanan',
-      description: ''
-    },
-    {
-      id: '2',
-      name: 'Minuman',
-      description: ''
-    },
-  ]
+  const { data: categories } = useCategories(10,1)
   const { id } = useParams()
   const { data: product } = useProductId(id!)
   const { mutate: updateProduct } = useUpdateProduct({
@@ -36,21 +20,20 @@ export default function UpdateProduct() {
 
   const navigate = useNavigate()
 
-  const formik: FormikProps<Product> = useFormik<Product>({
+  const formik: FormikProps<Omit<Product, 'category'>> = useFormik<Omit<Product, 'category'>>({
     initialValues: {
       name: "",
       price: 0,
-      category: "",
+      category_id: "",
       description: "",
       image: "",
     },
-    onSubmit: async (values, { resetForm }) => {
-      await updateProduct({ ...values, price: Number(values.price) }, {
+    onSubmit: async (values) => {
+      await updateProduct({ ...values, price: Number(values.price), id }, {
         onError: (error) => {
           console.log(`Something went wrong ${error}`)
         }
       });
-      resetForm();
       navigate('/product');
     },
   });
@@ -58,10 +41,9 @@ export default function UpdateProduct() {
   useEffect(() => {
     if (product) {
       formik.setValues({
-        id,
         name: product?.name || '',
         price: product?.price || 0,
-        category: product?.category || '',
+        category_id: product?.category_id || '',
         description: product?.description || '',
         image: product?.image || '',
       });
@@ -83,15 +65,12 @@ export default function UpdateProduct() {
           </div>
           <div className="mb-2">
             <SelectGroup
-              name="category"
-              options={categories}
+              name="category_id"
+              options={categories?.categories}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.category}
+              value={formik.values.category_id}
             />
-            {formik.touched.category && formik.errors.category ? (
-              <div>{formik.errors.category}</div>
-            ) : null}
           </div>
           <div className="mb-2">
             <InputGroup name="description" onChange={formik.handleChange} value={formik.values.description} />

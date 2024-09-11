@@ -62,7 +62,7 @@ import { useMutation } from "@tanstack/react-query"
 import { Product } from "../../types"
 
 export const useCreateProduct = ({ onSuccess }: { onSuccess: () => void }) => useMutation({
-    mutationFn: async (data: Product) => {
+    mutationFn: async (data: Omit<Product, 'category'>) => {
         const response = await axiosInstance.post('/products', data)
         return response
     },

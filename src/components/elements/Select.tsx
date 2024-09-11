@@ -1,17 +1,12 @@
-
-type SelectOption = {
-    id: string,
-    name: string,
-    description: string,
-}
+import { Category } from "../../types";
 
 type SelectProps = {
     id: string;
     name: string;
-    options: SelectOption[];
+    options?: Category[];
     onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     onBlur?: (e: React.FocusEvent<HTMLSelectElement>) => void;
-    value: string;
+    value?: string | number;
     placeholder?: string;
     className?: string;
 } & React.SelectHTMLAttributes<HTMLSelectElement>;
@@ -27,8 +22,8 @@ export default function Select({ id, name, options, onChange, onBlur, value, pla
         {...props}
     >
         <option value="">{placeholder}</option>
-        {options.map((option) => (
-            <option key={option.id} value={option.name}>
+        {options?.map((option) => (
+            <option key={option.id} value={option.id}>
                 {option.name}
             </option>
         ))}

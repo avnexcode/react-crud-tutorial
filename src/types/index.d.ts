@@ -1,0 +1,37 @@
+import { updateCategoryScheme } from "../schemes";
+
+export type Product = {
+  id?: string;
+  name: string;
+  description: string;
+  category_id?: string;
+  image: string;
+  price: number;
+  category: Category
+};
+
+export type CreateResponse = {
+  createCategory: (data: Category) => Promise<void>
+  data: Category | null
+  loading: boolean
+  totalPage?: number
+  error: Error | null
+  message: string
+  status: string
+}
+
+export type Category = {
+  id?: string;
+} & Yup.InferType<typeof updateCategoryScheme>;
+
+
+type KONZ = {
+  title: string
+  descs: string
+}
+
+
+
+type KONZ2 = Omit<KONZ, 'title'>
+
+type KONZ3 = Partial<KONZ>
