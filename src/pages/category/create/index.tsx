@@ -7,7 +7,11 @@ import { useNavigate } from "react-router-dom";
 import { string, z } from 'zod'
 import { toFormikValidationSchema } from "zod-formik-adapter";
 export default function CreateCategory() {
-    const { createCategory } = useCreateCategory()
+    const { createCategory } = useCreateCategory({
+        onSuccess: () => {
+            console.log('KONTOL')
+        }
+    })
     const navigate = useNavigate()
 
     // const CategorySchema = Yup.object().shape({

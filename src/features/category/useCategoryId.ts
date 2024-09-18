@@ -12,25 +12,17 @@ export const useCategoryId = (id: string) => {
     })
 
     useEffect(() => {
-        const fetchCategory = async () => {
-            try {
-                const response = await axiosInstance.get(`/categories/${id}`)
-                setState({
-                    data: response.data.data,
-                    loading: false,
-                    error: null,
-                    message: response.data.message,
-                    status: response.data.status,
-                })
-            } catch (err) {
-                setState(prev => ({
-                    ...prev,
-                    loading: false,
-                    error: err instanceof Error ? err : new Error('An unknown error occurred')
-                }))
-            }
-        }
-        fetchCategory()
+        axiosInstance.get(`/categories/${id}`).then(response => setState({
+            data: response.data.data,
+            loading: false,
+            error: null,
+            message: response.data.message,
+            status: response.data.status,
+        })).catch(error => setState(prev => ({
+            ...prev,
+            loading: false,
+            error: error instanceof Error ? error : new Error('An unknown error occurred')
+        })))
     }, [id])
 
     return state

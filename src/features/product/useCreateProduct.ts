@@ -30,7 +30,7 @@
 //             setLoading(false)
 //         }
 //     }
-//     return { createProduct, product, loading, error, status, message }
+//     return useMemo(() => {{createProduct, product, loading, error, status, message}})
 // }
 
 // import { useState } from "react"

@@ -54,7 +54,7 @@ export default function DetailProduct() {
         <h1>Name : {product.name}</h1>
         <h2>Price : {product.price}</h2>
         <p>Product Description{product.description}</p>
-        <h3>Category : {product.category.name || ''}</h3>
+        <h3>Category : {product.category ? product.category.name: 'Uncategoriez' }</h3>
         <button onClick={deleteHandler}>Delete Product</button>
         <Link to={`/product/update/${product.id}`}>Edit</Link>
       </div>

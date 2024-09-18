@@ -1,19 +1,19 @@
 import { useState } from "react"
 import axiosInstance from "../../libs/axios"
-import { type Category, type CreateResponse } from "../../types"
+import { type useUsersProps, type UserResponse, User } from "../../types"
 
-export const useCreateCategory = ({ onSuccess }: { onSuccess: () => void }): CreateResponse => {
-    const [state, setState] = useState<Omit<CreateResponse, 'createCategory'>>({
+export const useMutationDeleteUser = ({ onSuccess, onError }: useUsersProps): UserResponse => {
+    const [state, setState] = useState<Omit<UserResponse, 'mutate' | 'onSuccess' | 'onError'>>({
         data: null,
         loading: false,
         error: null,
         message: '',
         status: '',
     })
-    const createCategory = async (data: Category) => {
-        setState(prev => ({ ...prev, loading: true, error: null }))
+    const mutate = async (data: User) => {
+        setState(prev => ({ ...prev, loading: true }))
         try {
-            const response = await axiosInstance.post(`/categories`, data)
+            const response = await axiosInstance.delete(`/users/${data.id}`)
             setState({
                 data: response.data.data,
                 loading: false,
@@ -29,9 +29,5 @@ export const useCreateCategory = ({ onSuccess }: { onSuccess: () => void }): Cre
             }))
         }
     }
-    return {
-        ...state,
-        createCategory,
-        onSuccess
-    }
+    return { ...state, mutate, onSuccess, onError }
 }
